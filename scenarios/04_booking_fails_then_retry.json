@@ -1,0 +1,58 @@
+{
+  "name": "04_booking_fails_then_retry",
+  "description": "book_flight fails once with an explicit error; the agent retries once and exactly one booking succeeds.",
+  "modality": "text",
+  "tools": {
+    "flight_search": {
+      "latency": 1.0
+    },
+    "book_flight": {
+      "latency": 1.0,
+      "faults": [
+        "fail"
+      ]
+    }
+  },
+  "events": [
+    {
+      "t": 0.5,
+      "type": "text_chunk",
+      "text": "Find flights from Paris to Madrid tomorrow.",
+      "end_of_turn": true
+    },
+    {
+      "t": 4.0,
+      "type": "text_chunk",
+      "text": "Book the cheapest one for Maria Garcia.",
+      "end_of_turn": true
+    }
+  ],
+  "expected": {
+    "final_snapshot": {
+      "intent": "book_flight",
+      "slots": {
+        "origin": "Paris",
+        "destination": "Madrid",
+        "date": "tomorrow",
+        "passenger_name": "Maria Garcia"
+      }
+    },
+    "calls": [
+      {
+        "name": "book_flight",
+        "args": {
+          "passenger_name": "Maria Garcia"
+        },
+        "min": 2,
+        "max": 2,
+        "succeeded": true
+      }
+    ],
+    "successful_state_changes": {
+      "book_flight": 1
+    },
+    "final_text_contains": [
+      "BK-"
+    ]
+  }
+}

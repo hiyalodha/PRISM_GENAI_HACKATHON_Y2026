@@ -1,0 +1,53 @@
+{
+  "name": "05_ambiguous_clarify",
+  "description": "Underspecified request: the agent must ask for the missing origin, then complete the search.",
+  "modality": "text",
+  "tools": {
+    "flight_search": {
+      "latency": 1.0
+    }
+  },
+  "events": [
+    {
+      "t": 0.5,
+      "type": "text_chunk",
+      "text": "I need to fly out on Friday.",
+      "end_of_turn": true
+    },
+    {
+      "t": 4.0,
+      "type": "text_chunk",
+      "text": "From Boston to Chicago.",
+      "end_of_turn": true
+    }
+  ],
+  "expected": {
+    "clarify": true,
+    "final_snapshot": {
+      "intent": "flight_search",
+      "slots": {
+        "origin": "Boston",
+        "destination": "Chicago",
+        "date": "Friday"
+      }
+    },
+    "calls": [
+      {
+        "name": "flight_search",
+        "args": {
+          "origin": "Boston",
+          "destination": "Chicago",
+          "date": "Friday"
+        },
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      }
+    ],
+    "forbidden_calls": [
+      {
+        "name": "book_flight"
+      }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "06_chained_calls",
+  "description": "One utterance requires a chain: search, pick the cheapest result, then book it.",
+  "modality": "text",
+  "tools": {
+    "flight_search": {
+      "latency": 1.5
+    },
+    "book_flight": {
+      "latency": 1.5
+    }
+  },
+  "events": [
+    {
+      "t": 0.5,
+      "type": "text_chunk",
+      "text": "Find flights from London to Berlin on Friday and book the cheapest one for Ann Lee.",
+      "end_of_turn": true
+    }
+  ],
+  "expected": {
+    "clarify": false,
+    "final_snapshot": {
+      "intent": "book_flight",
+      "slots": {
+        "origin": "London",
+        "destination": "Berlin",
+        "date": "Friday",
+        "passenger_name": "Ann Lee"
+      }
+    },
+    "calls": [
+      {
+        "name": "flight_search",
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      },
+      {
+        "name": "book_flight",
+        "args": {
+          "passenger_name": "Ann Lee"
+        },
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      }
+    ],
+    "successful_state_changes": {
+      "book_flight": 1
+    },
+    "final_text_contains": [
+      "BK-"
+    ]
+  }
+}

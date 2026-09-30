@@ -1,0 +1,62 @@
+{
+  "name": "02_destination_change_midflight",
+  "description": "User interrupts and changes destination while flight_search is in flight. The stale search result is still delivered (ignore_cancel) and must be dropped.",
+  "modality": "text",
+  "tools": {
+    "flight_search": {
+      "latency": 3.0,
+      "ignore_cancel": true
+    }
+  },
+  "events": [
+    {
+      "t": 0.5,
+      "type": "text_chunk",
+      "text": "Find flights from London to Paris on Monday.",
+      "end_of_turn": true
+    },
+    {
+      "t": 1.5,
+      "type": "interrupt"
+    },
+    {
+      "t": 1.6,
+      "type": "text_chunk",
+      "text": "Actually, make it Rome instead.",
+      "end_of_turn": true
+    }
+  ],
+  "expected": {
+    "final_snapshot": {
+      "intent": "flight_search",
+      "slots": {
+        "origin": "London",
+        "destination": "Rome",
+        "date": "Monday"
+      }
+    },
+    "cancelled": [
+      {
+        "name": "flight_search",
+        "args": {
+          "destination": "Paris"
+        }
+      }
+    ],
+    "calls": [
+      {
+        "name": "flight_search",
+        "args": {
+          "destination": "Rome"
+        },
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      }
+    ],
+    "forbidden_calls": [],
+    "final_text_contains": [
+      "options"
+    ]
+  }
+}

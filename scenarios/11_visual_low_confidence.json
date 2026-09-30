@@ -1,0 +1,52 @@
+{
+  "name": "11_visual_low_confidence",
+  "description": "Blurry frame: the agent must not guess the model; it asks the user, then looks up the manual.",
+  "modality": "visual",
+  "tools": {
+    "manual_lookup": {
+      "latency": 1.0
+    }
+  },
+  "events": [
+    {
+      "t": 0.3,
+      "type": "frame",
+      "path": "assets/router_blurry.png"
+    },
+    {
+      "t": 0.5,
+      "type": "text_chunk",
+      "text": "What does this blinking light mean on my router?",
+      "end_of_turn": true
+    },
+    {
+      "t": 4.0,
+      "type": "text_chunk",
+      "text": "It's an X200.",
+      "end_of_turn": true
+    }
+  ],
+  "expected": {
+    "clarify": true,
+    "final_snapshot": {
+      "intent": "manual_lookup",
+      "slots": {
+        "device_model": "X200"
+      }
+    },
+    "calls": [
+      {
+        "name": "manual_lookup",
+        "args": {
+          "device_model": "X200"
+        },
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      }
+    ],
+    "final_text_contains": [
+      "no internet"
+    ]
+  }
+}

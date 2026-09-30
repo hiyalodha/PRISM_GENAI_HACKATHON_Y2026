@@ -1,0 +1,58 @@
+{
+  "name": "10_correction_without_interrupt",
+  "description": "Destination corrected by a new text turn while the search is in flight, with no interrupt signal.",
+  "modality": "text",
+  "tools": {
+    "flight_search": {
+      "latency": 3.0
+    }
+  },
+  "events": [
+    {
+      "t": 0.5,
+      "type": "text_chunk",
+      "text": "Find flights from New York to Miami on Saturday.",
+      "end_of_turn": true
+    },
+    {
+      "t": 1.2,
+      "type": "text_chunk",
+      "text": "No wait,"
+    },
+    {
+      "t": 1.5,
+      "type": "text_chunk",
+      "text": " make that Denver, not Miami.",
+      "end_of_turn": true
+    }
+  ],
+  "expected": {
+    "final_snapshot": {
+      "intent": "flight_search",
+      "slots": {
+        "origin": "New York",
+        "destination": "Denver",
+        "date": "Saturday"
+      }
+    },
+    "cancelled": [
+      {
+        "name": "flight_search",
+        "args": {
+          "destination": "Miami"
+        }
+      }
+    ],
+    "calls": [
+      {
+        "name": "flight_search",
+        "args": {
+          "destination": "Denver"
+        },
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      }
+    ]
+  }
+}

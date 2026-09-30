@@ -1,0 +1,9 @@
+{
+  "description": "A white home router with the model label X200 on the front; the power LED is blinking red.",
+  "confidence": 0.92,
+  "entities": {
+    "device_model": "X200",
+    "light_color": "red",
+    "light_state": "blinking"
+  }
+}

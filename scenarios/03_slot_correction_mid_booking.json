@@ -1,0 +1,78 @@
+{
+  "name": "03_slot_correction_mid_booking",
+  "description": "Passenger name corrected while book_flight is in flight: cancel the booking, rebook with the corrected name, exactly one booking committed.",
+  "modality": "text",
+  "tools": {
+    "flight_search": {
+      "latency": 1.0
+    },
+    "book_flight": {
+      "latency": 3.0
+    }
+  },
+  "events": [
+    {
+      "t": 0.5,
+      "type": "text_chunk",
+      "text": "Find flights from London to Berlin on Friday.",
+      "end_of_turn": true
+    },
+    {
+      "t": 4.0,
+      "type": "text_chunk",
+      "text": "Book the first one for John Smith.",
+      "end_of_turn": true
+    },
+    {
+      "t": 4.9,
+      "type": "interrupt"
+    },
+    {
+      "t": 5.0,
+      "type": "text_chunk",
+      "text": "Sorry, the name should be Jon Smith, not John Smith.",
+      "end_of_turn": true
+    }
+  ],
+  "expected": {
+    "final_snapshot": {
+      "intent": "book_flight",
+      "slots": {
+        "destination": "Berlin",
+        "date": "Friday",
+        "passenger_name": "Jon Smith"
+      }
+    },
+    "cancelled": [
+      {
+        "name": "book_flight",
+        "args": {
+          "passenger_name": "John Smith"
+        }
+      }
+    ],
+    "calls": [
+      {
+        "name": "book_flight",
+        "args": {
+          "passenger_name": "Jon Smith"
+        },
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      },
+      {
+        "name": "flight_search",
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "successful_state_changes": {
+      "book_flight": 1
+    },
+    "final_text_contains": [
+      "BK-",
+      "Jon Smith"
+    ]
+  }
+}

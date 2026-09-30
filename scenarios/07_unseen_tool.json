@@ -1,0 +1,104 @@
+{
+  "name": "07_unseen_tool",
+  "description": "A tool that exists only in the manifest (MCP-style schema). The agent must parse it, classify it as state-changing and call it with extracted arguments.",
+  "modality": "text",
+  "manifest": [
+    {
+      "name": "flight_search",
+      "description": "Search available flights between two cities on a given date.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "origin",
+          "destination",
+          "date"
+        ]
+      }
+    },
+    {
+      "name": "reserve_table",
+      "description": "Reserve a table at a restaurant for a party at a given time.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "restaurant": {
+            "type": "string"
+          },
+          "party_size": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "time": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "restaurant",
+          "party_size",
+          "time"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    }
+  ],
+  "tools": {
+    "reserve_table": {
+      "latency": 1.2,
+      "result": {
+        "confirmation_id": "RT-{hash}",
+        "restaurant": "{restaurant}",
+        "status": "reserved"
+      }
+    }
+  },
+  "events": [
+    {
+      "t": 0.5,
+      "type": "text_chunk",
+      "text": "Can you reserve a table at Nopa for 4 people at 7pm?",
+      "end_of_turn": true
+    }
+  ],
+  "expected": {
+    "final_snapshot": {
+      "intent": "reserve_table",
+      "slots": {
+        "restaurant": "Nopa",
+        "party_size": 4,
+        "time": "7:00 pm"
+      }
+    },
+    "calls": [
+      {
+        "name": "reserve_table",
+        "args": {
+          "restaurant": "Nopa",
+          "party_size": 4
+        },
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      }
+    ],
+    "successful_state_changes": {
+      "reserve_table": 1
+    },
+    "final_text_contains": [
+      "RT-"
+    ]
+  }
+}

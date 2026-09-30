@@ -1,0 +1,87 @@
+{
+  "name": "01_search_then_book",
+  "description": "Search flights with streamed partial text (speculative read-only search), then book the cheapest option.",
+  "modality": "text",
+  "tools": {
+    "flight_search": {
+      "latency": 1.5
+    },
+    "book_flight": {
+      "latency": 2.0
+    }
+  },
+  "events": [
+    {
+      "t": 0.5,
+      "type": "text_chunk",
+      "text": "Find me flights"
+    },
+    {
+      "t": 0.9,
+      "type": "text_chunk",
+      "text": " from London to Paris"
+    },
+    {
+      "t": 1.3,
+      "type": "text_chunk",
+      "text": " on Monday"
+    },
+    {
+      "t": 1.7,
+      "type": "text_chunk",
+      "text": " in the morning if possible,"
+    },
+    {
+      "t": 2.0,
+      "type": "text_chunk",
+      "text": " please.",
+      "end_of_turn": true
+    },
+    {
+      "t": 6.0,
+      "type": "text_chunk",
+      "text": "Book the cheapest one for Ann Lee.",
+      "end_of_turn": true
+    }
+  ],
+  "expected": {
+    "final_snapshot": {
+      "intent": "book_flight",
+      "slots": {
+        "origin": "London",
+        "destination": "Paris",
+        "date": "Monday",
+        "passenger_name": "Ann Lee"
+      }
+    },
+    "calls": [
+      {
+        "name": "flight_search",
+        "args": {
+          "origin": "London",
+          "destination": "Paris",
+          "date": "Monday"
+        },
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      },
+      {
+        "name": "book_flight",
+        "args": {
+          "passenger_name": "Ann Lee"
+        },
+        "min": 1,
+        "max": 1,
+        "succeeded": true
+      }
+    ],
+    "successful_state_changes": {
+      "book_flight": 1
+    },
+    "final_text_contains": [
+      "BK-"
+    ],
+    "clarify": false
+  }
+}
