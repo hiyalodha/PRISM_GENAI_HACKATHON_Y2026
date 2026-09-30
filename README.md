@@ -6,6 +6,9 @@ PRISM is the core of a full-duplex voice assistant. It listens, thinks, calls to
 
 It runs **fully offline on a laptop**: [Qwen3-VL-8B](https://huggingface.co/mlx-community/Qwen3-VL-8B-Instruct-4bit) plans and reads camera frames, [faster-whisper](https://github.com/SYSTRAN/faster-whisper) transcribes speech, and everything was measured on an Apple M5 MacBook with 16 GB of memory.
 
+**Presentation:** [SRM_Baithak_Submission.pptx](SRM_Baithak_Submission.pptx)  
+**Demo video (3 min 30 s):** [demo/Reflex_demo.mp4](demo/Reflex_demo.mp4)
+
 > **Status.** The official evaluation kit (harness, wire format, public scenarios) has not been released yet. Everything here is independent of the kit's format except [`src/prism/adapter.py`](src/prism/adapter.py), which is a passthrough stub to be filled in when the kit arrives. The scenarios and scorer in this repo are our own stand-ins.
 
 ## Results at a glance
